@@ -28,6 +28,18 @@
     letter-spacing: -0.03em;
     margin: 0 0 32px;
   }
+
+  @media (max-width: 550px) {
+    max-width: 320px;
+
+    label {
+      max-width: 320px;
+    }
+
+    input {
+      max-width: 320px;
+    }
+  }
 }
 
 .dropdownMenu {
