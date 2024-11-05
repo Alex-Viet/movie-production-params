@@ -16,6 +16,10 @@ export interface DropdownInputProps {
   value: string[];
   onChange: (name: string, selected: string[]) => void;
   onBlur?: () => void;
-  error?: boolean ;
+  error?: boolean;
   setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
+}
+
+export interface PaginationProps {
+  totalPages: number;
 }

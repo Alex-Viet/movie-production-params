@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { DropdownInputProps } from '@/app/types';
+import { motion } from 'framer-motion';
+import { errorAnimation } from '@/app/animation';
 import styles from './styles/DropdownInput.module.scss';
 
 const DropdownInput: React.FC<DropdownInputProps> = ({
@@ -51,7 +53,17 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
           readOnly
           required
         />
-        {error && <span className={styles.errorMessage}>Заполните поле</span>}
+        {error && (
+          <motion.span
+            className={styles.errorMessage}
+            variants={errorAnimation}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            Заполните поле
+          </motion.span>
+        )}
       </label>
       {isOpen && (
         <ul className={styles.dropdownMenu}>

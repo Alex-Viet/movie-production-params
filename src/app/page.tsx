@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import { FormData } from './types';
 import DropdownInput from './components/dropdown-input/DropdownInput';
 import { countries, formats, genres } from './mockData';
+import { motion } from 'framer-motion';
+import { errorAnimation, pulseAnimation } from './animation';
 import styles from './page.module.scss';
+import Pagination from './components/pagination/Pagination';
 
 export default function Home() {
   const initialData: FormData = {
@@ -84,9 +87,14 @@ export default function Home() {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Производственные параметры фильма</h1>
           <div className={styles.cancelBtnContainer}>
-            <button className={styles.button} onClick={handleCancel}>
+            <motion.button
+              className={styles.button}
+              onClick={handleCancel}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Отменить заполнение
-            </button>
+            </motion.button>
           </div>
         </div>
         <div className={styles.formContainer}>
@@ -105,7 +113,15 @@ export default function Home() {
               required
             />
             {errors.projectName && (
-              <span className={styles.errorMessage}>Заполните поле</span>
+              <motion.span
+                className={styles.errorMessage}
+                variants={errorAnimation}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+              >
+                Заполните поле
+              </motion.span>
             )}
           </label>
           <DropdownInput
@@ -189,25 +205,16 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.bottomContainer}>
-          <div className={styles.pagination}>
-            1 2 ... 4
-            <svg
-              width="40"
-              height="40"
-              viewBox="0 0 40 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M17 21C16.4477 21 16 20.5523 16 20C16 19.4477 16.4477 19 17 19L17 21ZM30.7071 19.2929C31.0976 19.6834 31.0976 20.3166 30.7071 20.7071L24.3431 27.0711C23.9526 27.4616 23.3195 27.4616 22.9289 27.0711C22.5384 26.6805 22.5384 26.0474 22.9289 25.6569L28.5858 20L22.9289 14.3431C22.5384 13.9526 22.5384 13.3195 22.9289 12.9289C23.3195 12.5384 23.9526 12.5384 24.3431 12.9289L30.7071 19.2929ZM17 19L30 19L30 21L17 21L17 19Z"
-                fill="#121212"
-              />
-            </svg>
-          </div>
-          <button
+          <Pagination totalPages={4} />
+          <motion.button
             className={`${styles.button} ${styles.confirmButton}`}
             onClick={(e) => handleNextStep(e)}
             disabled={!isNextStepActive}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            variants={isNextStepActive ? pulseAnimation : {}}
+            initial="initial"
+            animate={isNextStepActive ? 'animate' : 'initial'}
           >
             Следующий шаг
             <svg
@@ -224,7 +231,7 @@ export default function Home() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </motion.button>
         </div>
       </form>
     </main>
