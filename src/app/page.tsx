@@ -1,6 +1,62 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { FormData } from './types';
+import DropdownInput from './components/dropdown-input/DropdownInput';
+import { countries, formats, genres } from './mockData';
 import styles from './page.module.scss';
 
 export default function Home() {
+  const initialData: FormData = {
+    projectName: '',
+    genre: [],
+    format: [],
+    unfNumber: '',
+    country: [],
+    budget: undefined,
+    synopsis: '',
+  };
+
+  const [formData, setFormData] = useState<FormData>(initialData);
+  const [isNextStepActive, setIsNextStepActive] = useState(false);
+
+  // Загружаем данные из localStorage, если они есть
+  useEffect(() => {
+    const savedData = localStorage.getItem('movieProductionForm');
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+    }
+  }, []);
+
+  // Сохраняем данные в localStorage
+  useEffect(() => {
+    localStorage.setItem('movieProductionForm', JSON.stringify(formData));
+  }, [formData]);
+
+  // Валидация формы
+  useEffect(() => {
+    const { projectName, genre, format, country } = formData;
+    setIsNextStepActive(
+      Boolean(projectName && genre.length && format.length && country.length),
+    );
+  }, [formData]);
+
+  const handleChange = (name: string, value: string[] | number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleNextStep = (
+    evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    evt.preventDefault();
+
+    if (isNextStepActive) {
+      console.log(formData);
+    }
+  };
+
   return (
     <main className={styles.main}>
       <form className={styles.form} action="#">
@@ -17,41 +73,49 @@ export default function Home() {
               type="text"
               name="projectName"
               placeholder="Название"
+              value={formData.projectName}
+              onChange={(e) =>
+                setFormData({ ...formData, projectName: e.target.value })
+              }
               required
             />
           </label>
-          <label>
-            Страна-производитель (копродукция)
-            <input
-              name="country"
-              placeholder="Страна"
-              required
-            ></input>
-          </label>
+          <DropdownInput
+            text="Страна-производитель (копродукция)"
+            name="country"
+            placeholder="Страна"
+            options={countries}
+            value={formData.country}
+            onChange={handleChange}
+          />
           <div className={styles.inputContainer}>
-            <label>
-              Жанр
-              <input
-                name="genre"
-                placeholder="Жанр"
-                required
-              />
-            </label>
-            <label>
-              Формат (для онлайн-платформ, большого экрана, интернета, другое)
-              <input
-                name="format"
-                placeholder="Формат"
-                required
-              />
-            </label>
+            <DropdownInput
+              text="Жанр"
+              name="genre"
+              placeholder="Жанр"
+              options={genres}
+              value={formData.genre}
+              onChange={handleChange}
+            />
+            <DropdownInput
+              text="Формат (для онлайн-платформ, большого экрана, интернета, другое)"
+              name="format"
+              placeholder="Формат"
+              options={formats}
+              value={formData.format}
+              onChange={handleChange}
+            />
             <label>
               № УНФ или отсутствует
               <input
                 type="text"
-                name="unpNumber"
-                pattern="\d{3}-\d{3}-\d{3}-\d{2}-\d{3}"
+                name="unfNumber"
                 placeholder="890-000-000-00-000"
+                value={formData.unfNumber}
+                onChange={(e) =>
+                  setFormData({ ...formData, unfNumber: e.target.value })
+                }
+                pattern="\d{3}-\d{3}-\d{3}-\d{2}-\d{3}"
               />
             </label>
           </div>
@@ -62,6 +126,15 @@ export default function Home() {
               type="number"
               name="budget"
               placeholder="Сметная стоимость"
+              value={formData.budget || ''}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  budget: e.target.value
+                    ? parseFloat(e.target.value)
+                    : undefined,
+                })
+              }
             />
           </label>
           <div className={`${styles.textareaContainer} ${styles.row}`}>
@@ -70,6 +143,10 @@ export default function Home() {
               <textarea
                 name="synopsis"
                 placeholder="Напишите краткое изложение"
+                value={formData.synopsis}
+                onChange={(e) =>
+                  setFormData({ ...formData, synopsis: e.target.value })
+                }
               />
             </label>
           </div>
@@ -92,7 +169,8 @@ export default function Home() {
           </div>
           <button
             className={`${styles.button} ${styles.confirmButton}`}
-            disabled
+            onClick={(e) => handleNextStep(e)}
+            disabled={!isNextStepActive}
           >
             Следующий шаг
             <svg
