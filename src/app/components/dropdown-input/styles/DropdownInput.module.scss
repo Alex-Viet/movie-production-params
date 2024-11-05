@@ -1,0 +1,65 @@
+@import '../../../styles/variables.scss';
+
+.dropdownContainer {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+
+  label {
+    position: relative;
+
+    .errorInput {
+      border-color: #be1f2a;
+    }
+
+    .errorMessage {
+      font-size: 14px;
+      line-height: 149%;
+      text-align: right;
+      position: absolute;
+      top: 60px;
+      right: 22px;
+      transform: translateY(-50%);
+      color: #be1f2a;
+    }
+  }
+
+  &:last-of-type {
+    letter-spacing: -0.03em;
+    margin: 0 0 32px;
+  }
+}
+
+.dropdownMenu {
+  width: 100%;
+  max-height: 200px;
+  position: absolute;
+  left: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.19);
+  border-radius: 6px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  z-index: 2;
+
+  li {
+    font-size: 16px;
+    line-height: 119%;
+    opacity: 0.7;
+    color: $primary-color;
+  }
+}
+
+.dropdownItem {
+  font-size: 15px;
+  cursor: pointer;
+  padding: 12px 18px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  &.selected {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
