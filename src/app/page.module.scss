@@ -158,3 +158,106 @@
     stroke: #acacac;
   }
 }
+
+@media (max-width: 1200px) {
+  .formContainer {
+    max-width: 498px;
+    grid-template-columns: 1fr;
+    gap: 20px 0;
+  }
+
+  .bottomContainer {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 40px 10px 80px;
+  }
+
+  .titleContainer {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 60px;
+  }
+
+  .title {
+    font-size: 36px;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .inputContainer {
+    grid-row: span 1;
+  }
+
+  .textareaContainer {
+    grid-row: span 1;
+  }
+
+  .bottomContainer {
+    margin-top: 60px;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .confirmButton {
+    width: 100%;
+    padding-left: 0;
+    justify-content: center;
+    svg {
+      right: 10px;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .formContainer {
+    max-width: 320px;
+    width: 100%;
+
+    label {
+      max-width: 320px;
+    }
+
+    input {
+      max-width: 320px;
+    }
+  }
+
+  .textareaContainer {
+    max-width: 320px;
+
+    label {
+      max-width: 320px;
+    }
+
+    textarea {
+      max-width: 320px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+  }
+
+  .button {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .confirmButton {
+    font-size: 14px;
+    height: 44px;
+    padding: 10px;
+  }
+
+  .errorMessage {
+    font-size: 12px;
+    right: 10px;
+  }
+}
