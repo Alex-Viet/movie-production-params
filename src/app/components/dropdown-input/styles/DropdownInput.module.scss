@@ -4,6 +4,30 @@
   width: 100%;
   position: relative;
   display: inline-block;
+
+  label {
+    position: relative;
+
+    .errorInput {
+      border-color: #be1f2a;
+    }
+
+    .errorMessage {
+      font-size: 14px;
+      line-height: 149%;
+      text-align: right;
+      position: absolute;
+      top: 60px;
+      right: 22px;
+      transform: translateY(-50%);
+      color: #be1f2a;
+    }
+  }
+
+  &:last-of-type {
+    letter-spacing: -0.03em;
+    margin: 0 0 32px;
+  }
 }
 
 .dropdownMenu {

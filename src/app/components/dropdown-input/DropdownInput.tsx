@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { DropdownInputProps } from '@/app/types';
 import styles from './styles/DropdownInput.module.scss';
 
@@ -9,11 +9,19 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
   options,
   value,
   onChange,
+  error,
+  onBlur,
+  setErrors,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => setIsOpen(!isOpen);
+  const toggleDropdown = () => {
+    if (isOpen && onBlur) {
+      onBlur();
+    }
+
+    setIsOpen(!isOpen);
+  };
 
   // Функция-обработчик при выборе элемента из выпадающего меню
   const handleSelectOption = (option: string) => {
@@ -21,31 +29,20 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
     const updatedValue = isSelected
       ? value.filter((item) => item !== option)
       : [...value, option];
-    onChange(name, updatedValue);
-  };
 
-  // Функция-обработчик клика вне выпадающего меню
-  const handleOutsideClick = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsOpen(false);
+    onChange(name, updatedValue);
+
+    if (updatedValue.length > 0 && error) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: false }));
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, []);
-
   return (
-    <div className={styles.dropdownContainer} ref={dropdownRef}>
+    <div className={styles.dropdownContainer}>
       <label>
         {text}
         <input
+          className={error ? styles.errorInput : ''}
           type="text"
           name={name}
           placeholder={placeholder}
@@ -54,6 +51,7 @@ const DropdownInput: React.FC<DropdownInputProps> = ({
           readOnly
           required
         />
+        {error && <span className={styles.errorMessage}>Заполните поле</span>}
       </label>
       {isOpen && (
         <ul className={styles.dropdownMenu}>

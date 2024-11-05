@@ -15,4 +15,7 @@ export interface DropdownInputProps {
   options: string[];
   value: string[];
   onChange: (name: string, selected: string[]) => void;
+  onBlur?: () => void;
+  error?: boolean ;
+  setErrors: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 }

@@ -18,6 +18,7 @@ export default function Home() {
 
   const [formData, setFormData] = useState<FormData>(initialData);
   const [isNextStepActive, setIsNextStepActive] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
   // Загружаем данные из localStorage, если они есть
   useEffect(() => {
@@ -26,11 +27,6 @@ export default function Home() {
       setFormData(JSON.parse(savedData));
     }
   }, []);
-
-  // Сохраняем данные в localStorage
-  useEffect(() => {
-    localStorage.setItem('movieProductionForm', JSON.stringify(formData));
-  }, [formData]);
 
   // Валидация формы
   useEffect(() => {
@@ -47,6 +43,14 @@ export default function Home() {
     }));
   };
 
+  // Обработчик кнопки отмены заполнения
+  const handleCancel = () => {
+    setFormData(initialData);
+    setErrors({});
+    localStorage.removeItem('movieProductionForm');
+  };
+
+  // Обработчик кнопки перехода на след шаг
   const handleNextStep = (
     evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
@@ -54,6 +58,23 @@ export default function Home() {
 
     if (isNextStepActive) {
       console.log(formData);
+      // Сохраняем данные в localStorage
+      localStorage.setItem('movieProductionForm', JSON.stringify(formData));
+    }
+  };
+
+  // Обработчик ошибок при пустом поле ввода
+  const handleBlur = (field: keyof FormData) => {
+    const value = formData[field];
+
+    if (
+      !value ||
+      (typeof value === 'string' && value.trim() === '') ||
+      (Array.isArray(value) && value.length === 0)
+    ) {
+      setErrors((prevErrors) => ({ ...prevErrors, [field]: true }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, [field]: false }));
     }
   };
 
@@ -63,13 +84,16 @@ export default function Home() {
         <div className={styles.titleContainer}>
           <h1 className={styles.title}>Производственные параметры фильма</h1>
           <div className={styles.cancelBtnContainer}>
-            <button className={styles.button}>Отменить заполнение</button>
+            <button className={styles.button} onClick={handleCancel}>
+              Отменить заполнение
+            </button>
           </div>
         </div>
         <div className={styles.formContainer}>
           <label>
             Название проекта
             <input
+              className={errors.projectName ? styles.errorInput : ''}
               type="text"
               name="projectName"
               placeholder="Название"
@@ -77,8 +101,12 @@ export default function Home() {
               onChange={(e) =>
                 setFormData({ ...formData, projectName: e.target.value })
               }
+              onBlur={() => handleBlur('projectName')}
               required
             />
+            {errors.projectName && (
+              <span className={styles.errorMessage}>Заполните поле</span>
+            )}
           </label>
           <DropdownInput
             text="Страна-производитель (копродукция)"
@@ -87,6 +115,9 @@ export default function Home() {
             options={countries}
             value={formData.country}
             onChange={handleChange}
+            onBlur={() => handleBlur('country')}
+            error={errors.country}
+            setErrors={setErrors}
           />
           <div className={styles.inputContainer}>
             <DropdownInput
@@ -96,6 +127,9 @@ export default function Home() {
               options={genres}
               value={formData.genre}
               onChange={handleChange}
+              onBlur={() => handleBlur('genre')}
+              error={errors.genre}
+              setErrors={setErrors}
             />
             <DropdownInput
               text="Формат (для онлайн-платформ, большого экрана, интернета, другое)"
@@ -104,6 +138,9 @@ export default function Home() {
               options={formats}
               value={formData.format}
               onChange={handleChange}
+              onBlur={() => handleBlur('format')}
+              error={errors.format}
+              setErrors={setErrors}
             />
             <label>
               № УНФ или отсутствует
